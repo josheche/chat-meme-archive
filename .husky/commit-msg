@@ -1,0 +1,1 @@
+node scripts/commit-conventions.mjs commit "$1"

@@ -1,0 +1,85 @@
+{
+  "name": "chat-meme-archive",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A phone-first, credited C.H.A.T. meme archive with static export.",
+  "engines": {
+    "node": ">=24.0.0 <25",
+    "npm": ">=11"
+  },
+  "packageManager": "npm@11.9.0",
+  "scripts": {
+    "dev": "next dev",
+    "dev:static": "node scripts/next-static.mjs dev",
+    "build": "next build",
+    "build:static": "node scripts/next-static.mjs build",
+    "start": "next start",
+    "preview:static": "serve out --listen 3000",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:static": "node scripts/test-static.mjs",
+    "check:circular": "node scripts/check-circular.mjs",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test:conventions && npm run test:coverage && npm run check:circular",
+    "check:all": "npm run check && npm run test:e2e && npm run test:e2e:static && npm run audit",
+    "audit": "npm audit --audit-level=low",
+    "prepare": "node scripts/prepare.mjs",
+    "check:branch": "node scripts/commit-conventions.mjs branch",
+    "preversion": "npm run check:all",
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major",
+    "test:conventions": "node --test scripts/commit-conventions.test.mjs"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs}": [
+      "eslint --fix --max-warnings 0",
+      "prettier --write"
+    ],
+    "*.{json,md,css,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "1.5.0",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "next": "16.4.5",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tailwind-merge": "3.7.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/postcss": "4.3.4",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitest/coverage-v8": "5.1.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.5",
+    "eslint-config-prettier": "10.1.8",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
+    "madge": "8.0.0",
+    "prettier": "3.9.10",
+    "serve": "14.2.6",
+    "tailwindcss": "4.3.4",
+    "typescript": "5.9.3",
+    "vitest": "5.1.0"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.4"
+    },
+    "serve": {
+      "compression": "1.8.2"
+    }
+  }
+}

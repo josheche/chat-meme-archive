@@ -1,0 +1,3 @@
+npm run check:branch
+npx lint-staged
+npm run check:circular
