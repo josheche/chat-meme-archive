@@ -53,6 +53,11 @@ test('all display images load with explicit dimensions and no console errors', a
     'fair-point',
   ]) {
     await page.goto(route(`/memes/${slug}/`))
+    await expect(page.getByRole('button', { name: 'Share meme', exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Save image', exact: true })).toHaveAttribute(
+      'href',
+      route(`/memes/${slug}.png`),
+    )
     const image = page.locator('.detail-art > img')
     await expect(image).toBeVisible()
     await expect(image).toHaveJSProperty('complete', true)
@@ -71,7 +76,7 @@ for (const width of [320, 390, 430]) {
     await page.goto(route('/'))
     const nav = page.getByRole('navigation', { name: 'Mobile navigation' })
     await expect(nav).toBeVisible()
-    await page.screenshot({ path: `test-results/previews/home-${width}.png`, fullPage: true })
+    await page.screenshot({ path: `test-results/previews/home-${width}.png` })
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true)
@@ -87,7 +92,18 @@ for (const width of [320, 390, 430]) {
     await nav.getByRole('link', { name: 'Archive' }).click()
     await page.getByRole('link', { name: 'View Permission to cry, soldier.', exact: true }).click()
     await expect(page.locator('.detail-art > img')).toBeVisible()
-    await page.screenshot({ path: `test-results/previews/detail-${width}.png`, fullPage: true })
+    for (const control of await page.locator('.share-actions > *').all()) {
+      const box = await control.boundingBox()
+      expect(box!.height).toBeGreaterThanOrEqual(44)
+      expect(box!.width).toBeGreaterThanOrEqual(44)
+    }
+    await page.locator('.meme-share').scrollIntoViewIfNeeded()
+    await page.screenshot({ path: `test-results/previews/sharing-${width}.png` })
+    await page.evaluate(() => {
+      document.documentElement.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+    })
+    await page.screenshot({ path: `test-results/previews/detail-${width}.png` })
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true)

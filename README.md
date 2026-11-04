@@ -32,6 +32,18 @@ Phone is the base CSS layout. A fixed four-tab bottom navigation is the primary 
 - Reduced motion, visible focus, skip link, native selects, image alt text and active-tab labels are provided.
 - No remote fonts, analytics or external scripts.
 
+## Sharing memes
+
+Every meme page offers native sharing, Copy link, Save image, and Copy image, plus Open full-resolution image. Image actions use the same-origin original PNG, with the deployment base path included.
+
+- Native file sharing prepares the PNG before the tap to preserve Safari user activation. Unsupported file sharing explicitly offers a second tap to share the page link instead.
+- Copy image calls the Clipboard API during the tap with a promise-backed PNG. It checks the API and optional PNG-format support without querying browser permissions.
+- Failed or unavailable clipboard/link sharing exposes a labeled, selectable page URL. Image-copy failures point to saving or opening the original. Cancellation never triggers another share or copy.
+- The browser controls downloads and share destinations. A download click does not mean an image was saved to Photos. Clipboard handling may re-encode a PNG; only file sharing/downloads use the original file bytes.
+- Secure HTTPS (or local development) is required for native sharing and clipboard APIs. Physical iPhone/Android share sheets and paste destinations need device testing; mocked API tests do not certify them.
+
+Implementation references: [WebKit user activation](https://webkit.org/blog/13862/the-user-activation-api/), [WebKit Clipboard API](https://webkit.org/blog/10855/async-clipboard-api/), [Web Share](https://web.dev/articles/web-share), [Async Clipboard](https://web.dev/articles/async-clipboard).
+
 ## Component framework and design system
 
 The UI uses **shadcn/ui** source components, not only matching styling. Button, Input and Badge are adapted from the official MIT-licensed `new-york` registry. Button uses actual Radix Slot composition, CVA variants, `clsx` and `tailwind-merge`. Sources are documented in each component; license is in `docs/shadcn-LICENSE.md`. `components.json` supports adding further shadcn components.
@@ -59,4 +71,4 @@ npm run check:all
 
 Runs formatting, ESLint, strict TypeScript, commit-convention tests, 100% coverage of pure logic, circular-dependency check, production-server browser tests, static-export browser tests and dependency audit. Browser tests cover desktop flows and 320/390/430px phone-width layouts, touch navigation bounds, no horizontal overflow, images, credits, search/filter reset, reloads and history. Chromium can be selected with `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`.
 
-See `docs/verification.md` for results and known limits. This project is local until explicitly published; source existence alone is not deployment.
+See `docs/verification.md` for results and known limits. The source is published separately from the reusable starter. Deployment requires GitHub Pages configured with GitHub Actions; source existence alone is not deployment.

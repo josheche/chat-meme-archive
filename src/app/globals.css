@@ -636,6 +636,45 @@ h1 {
   border-top: 1px solid var(--border);
   padding-top: 30px;
 }
+.meme-share {
+  margin-top: 22px;
+  border-top: 1px solid var(--border);
+  padding-top: 22px;
+}
+.meme-share h2 {
+  font: 24px/1.2 var(--font-display);
+  margin-bottom: 16px;
+}
+.share-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.share-actions > * {
+  white-space: normal;
+  min-height: 48px;
+  padding-inline: 12px;
+  font-size: 15px;
+}
+.share-help,
+.share-status,
+.share-fallback {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.share-help {
+  color: var(--muted-foreground);
+  margin-top: 14px;
+}
+.share-status {
+  min-height: 2.6em;
+  margin-top: 8px;
+}
+.share-fallback {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
 .related-section > h2 {
   font: 28px/1.2 var(--font-display);
   margin-bottom: 24px;

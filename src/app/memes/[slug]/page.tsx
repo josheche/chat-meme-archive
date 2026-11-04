@@ -6,6 +6,7 @@ import { memes, people, lore } from '@/data/archive'
 import { findMeme, assetPath } from '@/lib/archive'
 import { MemeCard } from '@/components/meme-card'
 import { Button } from '@/components/ui/button'
+import { MemeShare } from '@/components/meme-share'
 
 export const dynamicParams = false
 export function generateStaticParams() {
@@ -53,6 +54,12 @@ export default async function MemePage({ params }: { params: Promise<{ slug: str
               Open full-resolution image ↗
             </a>
           </Button>
+          <MemeShare
+            key={meme.slug}
+            title={meme.title}
+            slug={meme.slug}
+            originalImage={meme.originalImage}
+          />
         </div>
         <div className="detail-copy">
           <section>
