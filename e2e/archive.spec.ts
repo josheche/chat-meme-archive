@@ -6,15 +6,15 @@ const route = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH || ''}${pat
 test('browse, search names, reset, sort and open a meme', async ({ page }) => {
   await page.goto(route('/'))
   await expect(page.getByRole('heading', { name: 'HOG HOG HOG' })).toBeVisible()
-  await expect(page.getByRole('status')).toHaveText('Showing 29 of 29 memes')
+  await expect(page.getByRole('status')).toHaveText('Showing 30 of 30 memes')
   await page.getByRole('searchbox', { name: 'Search the archive' }).fill('correction')
-  await expect(page.getByRole('status')).toHaveText('Showing 1 of 29 memes')
+  await expect(page.getByRole('status')).toHaveText('Showing 1 of 30 memes')
   await page.getByRole('searchbox', { name: 'Search the archive' }).fill('Joshua')
-  await expect(page.getByRole('status')).toHaveText('Showing 1 of 29 memes')
+  await expect(page.getByRole('status')).toHaveText('Showing 1 of 30 memes')
   await page.getByRole('searchbox', { name: 'Search the archive' }).fill('no such bit xyz')
-  await expect(page.getByRole('status')).toHaveText('Showing 0 of 29 memes')
+  await expect(page.getByRole('status')).toHaveText('Showing 0 of 30 memes')
   await page.getByRole('button', { name: 'Clear filters' }).click()
-  await expect(page.getByRole('status')).toHaveText('Showing 29 of 29 memes')
+  await expect(page.getByRole('status')).toHaveText('Showing 30 of 30 memes')
   await page.getByRole('combobox', { name: 'Sort memes' }).selectOption('oldest')
   await expect(page.locator('.meme-card h3').first()).toHaveText('The Pidermann Institute')
   await page.getByRole('link', { name: 'View One quick correction', exact: true }).click()
@@ -25,7 +25,7 @@ test('browse, search names, reset, sort and open a meme', async ({ page }) => {
   await expect(page.locator('.credits')).toContainText('Also referencedPete')
   await expect(page.getByRole('link', { name: 'Chris', exact: true })).toHaveCount(0)
   await page.getByRole('link', { name: '← All memes' }).click()
-  await expect(page.getByRole('status')).toHaveText('Showing 29 of 29 memes')
+  await expect(page.getByRole('status')).toHaveText('Showing 30 of 30 memes')
 })
 
 test('meme and lore deep links survive reload and browser history', async ({ page }) => {
@@ -206,7 +206,7 @@ for (const theme of ['light', 'dark'] as const) {
       await page.getByRole('searchbox').fill('not a known hog')
       await expect(page.getByRole('heading', { name: 'This pen is empty.' })).toBeVisible()
       await page.getByRole('button', { name: 'Clear filters' }).click()
-      await expect(page.locator('.meme-card')).toHaveCount(29)
+      await expect(page.locator('.meme-card')).toHaveCount(30)
     })
   }
 }
@@ -261,4 +261,25 @@ test('unrelated Raul detail routes and direct image assets return 404', async ({
   }
   const home = await request.get(route('/'))
   expect(await home.text()).not.toMatch(/raul/i)
+})
+
+test('recovered bow pose is searchable and keeps its upload-date caveat after reload', async ({
+  page,
+}) => {
+  await page.goto(route('/'))
+  await page.getByRole('searchbox', { name: 'Search the archive' }).fill('bow pose')
+  await expect(page.getByRole('status')).toHaveText('Showing 1 of 30 memes')
+  await page.getByRole('link', { name: 'View Bow Pose', exact: true }).click()
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'Bow Pose', exact: true })).toBeVisible()
+  await expect(page.locator('.credits')).toContainText('DepictedBrolley')
+  await expect(page.locator('.credits')).toContainText('Seen · Oct 11, 2026')
+  await expect(page.locator('.credits')).toContainText('Creation date is unknown.')
+  await expect(page.locator('.credits')).toContainText('First use in the group is unknown.')
+  await expect(page.getByRole('heading', { name: 'For the record.' })).toHaveCount(0)
+  await expect(page.locator('.related-lore')).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'Open full-resolution image' })).toHaveAttribute(
+    'href',
+    route('/memes/brolley-bow-pose.jpg'),
+  )
 })
