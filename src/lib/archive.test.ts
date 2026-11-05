@@ -8,7 +8,7 @@ import { join } from 'node:path'
 
 describe('archive logic', () => {
   it('sorts without mutating source records', () => {
-    expect(filterMemes(memes, '', 'newest')[0]?.slug).toBe('lebron-smiling-as-admin')
+    expect(filterMemes(memes, '', 'newest')[0]?.slug).toBe('brolley-smiling-as-admin')
     expect(filterMemes(memes, '', 'oldest')[0]?.slug).toBe('pete-pidermann-institute-facade')
     expect(memes[0]?.slug).toBe('peace-in-chat')
     const dated = [memes[0]!, { ...memes[1]!, date: '2026-11-03' }]
@@ -31,16 +31,16 @@ describe('archive logic', () => {
     const data = await import('@/data/archive')
     expect(Object.keys(data).sort()).toEqual(['lore', 'memes'])
   })
-  it('preserves 30 distinct originals without unsupported metadata', () => {
-    expect(memes).toHaveLength(30)
+  it('preserves 31 distinct originals without unsupported metadata', () => {
+    expect(memes).toHaveLength(31)
     const hashes = memes.map((meme) =>
       createHash('sha256')
         .update(readFileSync(join(process.cwd(), 'public', meme.originalImage)))
         .digest('hex'),
     )
-    expect(new Set(hashes).size).toBe(30)
+    expect(new Set(hashes).size).toBe(31)
     expect(memes.filter((meme) => meme.dateBasis === 'delivery')).toHaveLength(7)
-    expect(memes.filter((meme) => meme.dateBasis === 'creation')).toHaveLength(20)
+    expect(memes.filter((meme) => meme.dateBasis === 'creation')).toHaveLength(21)
     expect(memes.filter((meme) => meme.dateBasis === 'uploaded')).toHaveLength(2)
     expect(memes.filter((meme) => meme.dateBasis === 'observed')).toHaveLength(1)
     for (const meme of memes) {
@@ -51,13 +51,40 @@ describe('archive logic', () => {
       expect(meme).not.toHaveProperty('sharer')
       expect(meme).not.toHaveProperty('source')
     }
-    for (const meme of memes.slice(7)) {
+    for (const meme of memes
+      .slice(7)
+      .filter((record) => record.slug !== 'brolley-smiling-as-admin')) {
       expect(meme.story).toBeUndefined()
       expect(meme.lore).toBeUndefined()
       expect(meme.formatUrl).toBeUndefined()
     }
     expect(findMeme('lebron-smiling-as-admin')?.dateLabel).toBe('Observed · Nov 5, 2026')
     expect(findMeme('pete-pidermann-institute-facade')?.dateLabel).toBe('Seen · May 6, 2026')
+  })
+  it('preserves the Brolley admin adaptation and links its archived source', () => {
+    const meme = findMeme('brolley-smiling-as-admin')!
+    expect(meme).toMatchObject({
+      image: '/memes/brolley-smiling-as-admin.webp',
+      originalImage: '/memes/brolley-smiling-as-admin.png',
+      width: 1254,
+      height: 1254,
+      date: '2026-11-05',
+      dateLabel: 'Created · Nov 5, 2026',
+      dateBasis: 'creation',
+      depicted: ['Brolley'],
+      referenced: ['LeBron James'],
+      firstGroupUse: null,
+      formatUrl: 'https://josheche.github.io/chat-meme-archive/memes/lebron-smiling-as-admin/',
+      lore: ['admin-cinematic-universe'],
+    })
+    expect(
+      createHash('sha256')
+        .update(readFileSync(join(process.cwd(), 'public', meme.originalImage)))
+        .digest('hex'),
+    ).toBe('7dacc151a515959a3b5de2d22308569263ff5c42142c21bbaad728ff525dc0c7')
+    expect(
+      filterMemes(memes, 'smiling through it all', 'newest').map((record) => record.slug),
+    ).toEqual([meme.slug, 'lebron-smiling-as-admin'])
   })
   it('preserves the recovered bow-pose original with only its known upload date', () => {
     const meme = findMeme('brolley-bow-pose')!

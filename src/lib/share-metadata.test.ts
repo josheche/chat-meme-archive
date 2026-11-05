@@ -29,7 +29,7 @@ describe('share metadata', () => {
       url: 'https://example.com/archive/',
       images: [
         {
-          url: 'https://example.com/archive/share/lebron-smiling-as-admin.png',
+          url: 'https://example.com/archive/share/brolley-smiling-as-admin.png',
           type: 'image/png',
           width: 1200,
           height: 630,
