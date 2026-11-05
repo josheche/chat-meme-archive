@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { memes, people } from '@/data/archive'
+import { memes } from '@/data/archive'
 import { filterMemes } from '@/lib/archive'
 import { Input } from './ui/input'
 import { Badge } from './ui/badge'
@@ -10,23 +10,21 @@ import { MemeCard } from './meme-card'
 
 export function ArchiveGallery() {
   const [query, setQuery] = useState('')
-  const [person, setPerson] = useState('')
   const [order, setOrder] = useState('newest')
-  const visible = filterMemes(memes, query, person, order)
+  const visible = filterMemes(memes, query, order)
   function reset() {
     setQuery('')
-    setPerson('')
     setOrder('newest')
   }
   return (
     <section id="collection" className="collection">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">THE COLLECTION</p>
-          <h2>Every bit has a backstory.</h2>
+          <p className="eyebrow">FRESH FROM THE GROUP CHAT</p>
+          <h2>The hog vault.</h2>
         </div>
         <Badge variant="outline" className="collection-count">
-          {memes.length} CATALOGUED / MORE TO COME
+          {String(memes.length).padStart(2, '0')} MEMES / ZERO CHILL
         </Badge>
       </div>
       <div className="filters">
@@ -35,23 +33,10 @@ export function ArchiveGallery() {
           <span aria-hidden="true">⌕</span>
           <Input
             type="search"
-            placeholder="Search the archive, a person, a bit…"
+            placeholder="Find a meme, a name, a bit…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-        </label>
-        <label>
-          <span className="sr-only">Filter by person</span>
-          <select value={person} onChange={(e) => setPerson(e.target.value)}>
-            <option value="">All people</option>
-            {people
-              .filter((p) => p.slug !== 'dot')
-              .map((p) => (
-                <option key={p.slug} value={p.slug}>
-                  {p.name}
-                </option>
-              ))}
-          </select>
         </label>
         <label>
           <span className="sr-only">Sort memes</span>
@@ -72,19 +57,22 @@ export function ArchiveGallery() {
         </div>
       ) : (
         <div className="empty-state">
-          <h3>No bit left behind. Just not found.</h3>
+          <span className="empty-hog" aria-hidden="true">
+            🐖
+          </span>
+          <h3>This pen is empty.</h3>
           <p>Try another name or clear the filters.</p>
           <Button onClick={reset}>Clear filters</Button>
         </div>
       )}
       <aside className="archive-note">
-        <span aria-hidden="true">↳</span>
+        <span aria-hidden="true">🦔</span>
         <div>
           <strong>An archive in progress.</strong>
           <p>
-            This first collection contains seven verified remixes from November 4. Older images,
-            variants and other people’s creations are still being catalogued. This is not yet every
-            meme.
+            This collection contains {memes.length} images. Older works and other group creations
+            are still being recovered. Dates describe creation, delivery, upload or observation, as
+            labeled. This is not yet every meme.
           </p>
         </div>
       </aside>

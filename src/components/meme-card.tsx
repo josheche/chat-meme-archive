@@ -25,17 +25,13 @@ export function MemeCard({ meme, index = 0 }: { meme: Meme; index?: number }) {
         </span>
       </Link>
       <div className="card-meta">
-        <span>{meme.format}</span>
-        <span>04 NOV 2026</span>
+        <span>{meme.format ?? 'From the collection'}</span>
+        <span>{meme.dateLabel}</span>
       </div>
       <h3>
         <Link href={`/memes/${meme.slug}/`}>{meme.title}</Link>
       </h3>
-      <p>{meme.subtitle}</p>
-      <div className="card-credit">
-        Made by <Link href="/people/dot/">dot</Link>
-        <span>·</span>For <Link href="/people/josh/">Josh</Link>
-      </div>
+      {meme.subtitle && <p>{meme.subtitle}</p>}
     </article>
   )
 }

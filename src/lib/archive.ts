@@ -1,29 +1,26 @@
-import { memes, people, type Meme } from '@/data/archive'
+import { memes, type Meme } from '@/data/archive'
 
-export function filterMemes(items: Meme[], query: string, person: string, order: string): Meme[] {
+export function filterMemes(items: Meme[], query: string, order: string): Meme[] {
   const needle = query.trim().toLowerCase()
   return items
     .filter((meme) => {
-      const matchesPerson = !person || [...meme.depicted, ...meme.referenced].includes(person)
       const haystack = [
         meme.title,
         meme.subtitle,
         meme.story,
+        meme.alt,
         meme.format,
         ...meme.depicted,
         ...meme.referenced,
-        meme.creator,
-        meme.requester,
-        ...people
-          .filter((person) => [...meme.depicted, ...meme.referenced].includes(person.slug))
-          .map((person) => person.name),
       ]
         .join(' ')
         .toLowerCase()
-      return matchesPerson && haystack.includes(needle)
+      return haystack.includes(needle)
     })
     .sort((a, b) =>
-      order === 'oldest' ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date),
+      order === 'oldest'
+        ? a.date.localeCompare(b.date) || a.slug.localeCompare(b.slug)
+        : b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug),
     )
 }
 

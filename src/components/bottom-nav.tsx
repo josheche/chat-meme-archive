@@ -5,11 +5,6 @@ import { usePathname } from 'next/navigation'
 const items = [
   { href: '/', title: 'Archive', path: 'M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z' },
   {
-    href: '/people/',
-    title: 'People',
-    path: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3a4 4 0 0 1 0 8m6 10v-2a4 4 0 0 0-3-3.87M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z',
-  },
-  {
     href: '/lore/',
     title: 'The lore',
     path: 'M4 3h7a3 3 0 0 1 3 3v15a3 3 0 0 0-3-3H4V3Zm16 0h-3a3 3 0 0 0-3 3v15a3 3 0 0 1 3-3h3V3Z',
