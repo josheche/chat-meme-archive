@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button'
 import { ArchiveGallery } from '@/components/archive-gallery'
 import { assetPath } from '@/lib/archive'
 import { lore, memes } from '@/data/archive'
+import { homeShareMetadata } from '@/lib/share-metadata'
+
+export const metadata = homeShareMetadata()
 
 export default function Home() {
   return (
