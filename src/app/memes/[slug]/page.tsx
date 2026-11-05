@@ -6,6 +6,7 @@ import { memes, lore } from '@/data/archive'
 import { findMeme, assetPath } from '@/lib/archive'
 import { MemeCard } from '@/components/meme-card'
 import { Button } from '@/components/ui/button'
+import { memeShareMetadata } from '@/lib/share-metadata'
 
 export const dynamicParams = false
 export function generateStaticParams() {
@@ -17,7 +18,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  return { title: findMeme(slug)?.title ?? 'Meme not found' }
+  const meme = findMeme(slug)
+  if (!meme) notFound()
+  return memeShareMetadata(meme)
 }
 export default async function MemePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

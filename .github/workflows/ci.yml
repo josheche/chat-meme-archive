@@ -89,6 +89,7 @@ jobs:
       pages: read
     outputs:
       base_path: ${{ steps.pages.outputs.base_path }}
+      site_origin: ${{ steps.pages.outputs.origin }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -103,6 +104,7 @@ jobs:
       - run: npm run build:static
         env:
           NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          SITE_ORIGIN: ${{ steps.pages.outputs.origin }}
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: out
@@ -147,6 +149,7 @@ jobs:
         env:
           E2E_BASE_URL: ${{ needs.pages-deploy.outputs.page_url }}
           NEXT_PUBLIC_BASE_PATH: ${{ needs.pages-build.outputs.base_path }}
+          SITE_ORIGIN: ${{ needs.pages-build.outputs.site_origin }}
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         if: always()
         with:
