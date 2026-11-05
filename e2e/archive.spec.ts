@@ -37,7 +37,7 @@ test('meme and lore deep links survive reload and browser history', async ({ pag
     page.getByRole('heading', { name: 'The admin cinematic universe', exact: true }),
   ).toBeVisible()
   await page.reload()
-  await expect(page.locator('.meme-card')).toHaveCount(3)
+  await expect(page.locator('.meme-card')).toHaveCount(4)
   await page.goBack()
   await expect(page.getByRole('heading', { name: 'Peace to C.H.A.T.', exact: true })).toBeVisible()
   await page.goForward()
