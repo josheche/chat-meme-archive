@@ -31,18 +31,18 @@ describe('archive logic', () => {
     const data = await import('@/data/archive')
     expect(Object.keys(data).sort()).toEqual(['lore', 'memes'])
   })
-  it('preserves 30 distinct originals without unsupported metadata', () => {
-    expect(memes).toHaveLength(30)
+  it('preserves 31 distinct preserved images without unsupported metadata', () => {
+    expect(memes).toHaveLength(31)
     const hashes = memes.map((meme) =>
       createHash('sha256')
         .update(readFileSync(join(process.cwd(), 'public', meme.originalImage)))
         .digest('hex'),
     )
-    expect(new Set(hashes).size).toBe(30)
+    expect(new Set(hashes).size).toBe(31)
     expect(memes.filter((meme) => meme.dateBasis === 'delivery')).toHaveLength(7)
     expect(memes.filter((meme) => meme.dateBasis === 'creation')).toHaveLength(20)
     expect(memes.filter((meme) => meme.dateBasis === 'uploaded')).toHaveLength(2)
-    expect(memes.filter((meme) => meme.dateBasis === 'observed')).toHaveLength(1)
+    expect(memes.filter((meme) => meme.dateBasis === 'observed')).toHaveLength(2)
     for (const meme of memes) {
       expect(meme.date).toMatch(/^\d{4}-\d{2}-\d{2}$/)
       expect(meme.datePrecision).toBe('day')
@@ -83,6 +83,32 @@ describe('archive logic', () => {
       meme.slug,
     )
     expect(filterMemes(memes, 'bow pose', 'newest')).toEqual([meme])
+    expect(meme.story).toBeUndefined()
+    expect(meme.lore).toBeUndefined()
+  })
+  it('preserves the recovered chat-photo copy with only verified attribution', () => {
+    const meme = findMeme('musclebound-chat-avatar')!
+    expect(meme).toMatchObject({
+      subtitle: 'Group photo added by Brolley. Original creator unverified.',
+      image: '/memes/musclebound-chat-avatar.jpg',
+      originalImage: '/memes/musclebound-chat-avatar.jpg',
+      originalImageLabel: 'Open preserved 320 × 320 copy',
+      width: 320,
+      height: 320,
+      date: '2026-11-04',
+      dateLabel: 'Observed · Nov 4, 2026',
+      dateBasis: 'observed',
+      firstGroupUse: null,
+      depicted: [],
+      referenced: [],
+    })
+    expect(
+      createHash('sha256')
+        .update(readFileSync(join(process.cwd(), 'public', meme.originalImage)))
+        .digest('hex'),
+    ).toBe('2c4abc9e890557f91359e53772d0db4f7f1187e22c3b4aa3ae9521dff8b11a50')
+    expect(filterMemes(memes, 'Brolley', 'newest')).toContain(meme)
+    expect(meme).not.toHaveProperty('creator')
     expect(meme.story).toBeUndefined()
     expect(meme.lore).toBeUndefined()
   })

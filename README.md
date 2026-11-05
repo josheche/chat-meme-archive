@@ -30,6 +30,6 @@ Miami orange/green, hog identity, self-hosted Anton and Kode Mono, and device-aw
 
 ## Content
 
-Names and references live directly on meme records. There is no people directory, profile page or standalone roster. The collection contains 30 images. Original PNGs and JPEGs are preserved; available WebP display derivatives retain the original dimensions. Dates retain their evidence basis (created, delivered, uploaded or observed) without invented timestamps. Same-day records sort by slug rather than implying a known creation order.
+Names and references live directly on meme records. There is no people directory, profile page or standalone roster. The collection contains 31 images. Original PNGs and JPEGs are preserved, along with one explicitly labeled 320×320 Instagram group-photo copy; available WebP display derivatives retain the original dimensions. Dates retain their evidence basis (created, delivered, uploaded or observed) without invented timestamps. Same-day records sort by slug rather than implying a known creation order.
 
 The archive, image files and source repository are public. GitHub Pages deploys from `main` after the configured quality and browser checks. There is no password gate or access protection. Keep private transcripts, source manifests, credentials and unpublished material out of this repository.

@@ -12,6 +12,7 @@ export type Meme = {
   subtitle?: string
   image: string
   originalImage: string
+  originalImageLabel?: string
   width: number
   height: number
   alt: string
@@ -584,6 +585,24 @@ export const memes: Meme[] = [
     datePrecision: 'day',
     firstGroupUse: null,
     depicted: ['LeBron James'],
+    referenced: [],
+  },
+  {
+    slug: 'musclebound-chat-avatar',
+    title: "Brolley's New Chat Photo",
+    subtitle: 'Group photo added by Brolley. Original creator unverified.',
+    image: '/memes/musclebound-chat-avatar.jpg',
+    originalImage: '/memes/musclebound-chat-avatar.jpg',
+    originalImageLabel: 'Open preserved 320 × 320 copy',
+    width: 320,
+    height: 320,
+    alt: 'A heavily muscled, stylized man wearing a leather cap, sunglasses, black straps and tight gray trousers against a black background.',
+    date: '2026-11-04',
+    dateLabel: 'Observed · Nov 4, 2026',
+    dateBasis: 'observed',
+    datePrecision: 'day',
+    firstGroupUse: null,
+    depicted: [],
     referenced: [],
   },
 ]
