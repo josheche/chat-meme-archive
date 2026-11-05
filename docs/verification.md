@@ -1,23 +1,23 @@
-# Verification — November 4, 2026
+# Archive verification
 
-## Passed locally
+## Scope
 
-- `npm run check`: formatting, zero-warning ESLint, strict TypeScript, 13 convention tests, six archive unit tests, circular/unresolved import checks.
-- Unit coverage: 100% statements, branches, functions and lines across the two pure-logic files.
-- Next.js production server build.
-- Next.js static export at both the root and a `/chat-meme-archive` base path: seven meme detail pages, five person/credit pages, three lore pages, index pages, about and error pages.
-- Static HTML inspection: 22 generated HTML files and 820 local asset/link references resolved. Expected route counts and viewport safe-area declaration were checked. No private provenance markers were present in exported HTML.
-- `npm audit --audit-level=low`: zero vulnerabilities.
-- All seven source PNGs were inspected visually after supported materialization. The corrected Anakin caption is confirmed in the pixels. Original PNGs are retained unchanged; display WebP files reduce the seven-image payload from approximately 16 MB to 1.2 MB without cropping or changing dimensions.
+The current collection contains 31 stills: 31 original PNG/JPEG files and 26 WebP display derivatives. The seven original detail-page slugs and their assets are retained. The people directory, profile routes and person filter are removed. The LeBron admin image has a detail page at `/memes/lebron-smiling-as-admin/`.
 
-## Blocked, not passed
+Dates are labeled by their evidence basis, without inventing creation timestamps or first group-use dates. An observation date is not a creation date. Empty optional metadata does not create empty sections.
 
-`npm run check:all` reached browser testing but Chromium failed before any test could execute: the environment denied creation of its required local IPC socket (`socket() failed: Operation not permitted`). One escalated retry had the same outcome. No alternate browser route was used to evade this restriction.
+## Required checks
 
-Therefore all six browser scenarios are **unverified**, not assertions that failed in the app. Static-browser execution, screenshots, rendered phone visual QA and real iOS/Android behavior are also unverified. The scenarios are committed as source for a normal browser-capable CI environment: search/filter/reset, sort, detail pages, history/reload, all seven images, and 320/390/430px mobile navigation/overflow checks. Mobile viewport checks are not equivalent to physical-device testing.
+Run `npm run check:all` before release. It includes formatting, ESLint, strict TypeScript, convention tests, unit coverage, circular imports, server and static browser tests, and dependency audit.
 
-## Scope and editorial limits
+Browser coverage includes all 31 images and original-image links, search and reset, chronological sorting, detail/lore deep links, reload and history, removed-route 404s, device theme changes, local theme persistence, blocked storage, and 320/390/430px phone-width layouts. Theme layouts are additionally checked at 1440px.
 
-This is an initial curated collection, not “all memes.” Dates describe delivery to Josh, not publication in the group. Underlying meme-format authorship is not independently verified. The source links were present in the original deliveries; no current trend rankings are claimed. Public lore is a concise parody summary, not a raw private-chat transcript or a factual biography.
+The GitHub Actions workflow runs quality and browser checks for pull requests. On `main`, it builds the Pages export using the configured base path, deploys, then runs the browser suite against the live URL. Check the workflow result for the exact deployed commit.
 
-No deployment, upload, remote repository creation or push was performed as part of this local build.
+## Known limits
+
+An environment that blocks Chromium Unix sockets cannot perform the UI tests. Report that as a blocked check, not a pass; use the configured GitHub Actions Chromium runner for release verification. Screenshots and Chromium emulation do not establish physical iPhone or Android behavior. Existing external meme-format links are retained but are not covered by the archive's automated tests. The collection is not an exhaustive history.
+
+## Public deployment
+
+The archive and its source are public, without password protection. Private transcripts, source manifests, credentials and unpublished material must not be included.

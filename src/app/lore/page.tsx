@@ -22,7 +22,7 @@ export default function LorePage() {
               <h2>{story.title}</h2>
               <p>{story.summary}</p>
               <span className="lore-count">
-                {memes.filter((m) => m.lore.includes(story.slug)).length} MEMES IN THIS STORY
+                {memes.filter((m) => m.lore?.includes(story.slug)).length} MEMES IN THIS STORY
               </span>
             </div>
             <span className="lore-arrow">↗</span>

@@ -10,7 +10,7 @@ export default async function LorePage({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const story = lore.find((l) => l.slug === slug)
   if (!story) notFound()
-  const linked = memes.filter((m) => m.lore.includes(slug))
+  const linked = memes.filter((m) => m.lore?.includes(slug))
   return (
     <main id="main" className="shell interior-page">
       <Link href="/lore/" className="back-link">

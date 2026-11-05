@@ -1,9 +1,11 @@
 # Archive architecture
 
-The archive is a standalone copy of the generic starter. Content lives in `src/data/archive.ts`; pure query and asset-path logic lives in `src/lib`. Next.js Server Components pre-render all routes. Only the search/filter panel and active mobile navigation require client state.
+The archive is a standalone copy of the generic starter. Content lives in `src/data/archive.ts`; pure query and asset-path logic lives in `src/lib`. Next.js Server Components pre-render all routes. Only the search/sort panel, active mobile navigation and theme switch require client state.
 
-`/` is the collection. `/memes/[slug]/`, `/people/[slug]/` and `/lore/[slug]/` generate every known slug at build time. `/about/` records attribution and completeness limits. No runtime data service or server mutation is used.
+`/` is the collection. `/memes/[slug]/` and `/lore/[slug]/` generate every known slug at build time. `/about/` records attribution and completeness limits. No runtime data service or server mutation is used.
 
-shadcn Button, Input and Badge are locally owned source components backed by Radix Slot, CVA, clsx and tailwind-merge. Semantic theme tokens are centralized in `globals.css`. The base layout is mobile, with progressively enhanced wider layouts.
+shadcn Button, Input and Badge are locally owned source components backed by Radix Slot, CVA, clsx and tailwind-merge. Semantic theme tokens are centralized in `globals.css`. The base layout is mobile, with progressively enhanced wider layouts. Light/dark preferences are resolved before paint and stored only in browser localStorage. Anton and Kode Mono are bundled with their OFL licenses and loaded through next/font/local; no visitor requests go to a font provider. See design-system.md.
 
-Every source asset is an unchanged original generated PNG, with a lightweight WebP display derivative. Source IDs and transcript evidence are intentionally kept in an editorial report outside the public repository. Public data stores only the credit and safe narrative needed by the archive.
+The collection preserves 31 unchanged PNG or JPEG originals, with 26 same-dimension WebP display derivatives. It includes generated images and an edited group-avatar meme. Source IDs and transcript evidence are intentionally kept in an editorial report outside the public repository. Site data stores only image descriptions, per-image names, supported dates and existing safe narrative. Creator and sharer attribution are omitted when unverified. New records do not require a story, format link or lore association.
+
+Names are plain per-meme metadata, searchable alongside titles and stories. There is no people route, profile, roster or person filter.

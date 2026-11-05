@@ -1,26 +1,75 @@
 import { describe, expect, it } from 'vitest'
-import { memes, people, lore } from '@/data/archive'
+import { memes, lore } from '@/data/archive'
 import { assetPath, filterMemes, findMeme } from './archive'
 import { cn } from './utils'
-import { existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 describe('archive logic', () => {
   it('sorts without mutating source records', () => {
-    expect(filterMemes(memes, '', '', 'newest')[0]?.slug).toBe('fair-point')
-    expect(filterMemes(memes, '', '', 'oldest')[0]?.slug).toBe('peace-in-chat')
+    expect(filterMemes(memes, '', 'newest')[0]?.slug).toBe('lebron-smiling-as-admin')
+    expect(filterMemes(memes, '', 'oldest')[0]?.slug).toBe('pete-pidermann-institute-facade')
     expect(memes[0]?.slug).toBe('peace-in-chat')
+    const dated = [memes[0]!, { ...memes[1]!, date: '2026-11-03' }]
+    expect(filterMemes(dated, '', 'newest')[0]?.slug).toBe('peace-in-chat')
+    expect(filterMemes(dated, '', 'oldest')[0]?.slug).toBe('hit-the-road')
   })
-  it('filters case-insensitive text, subject and referenced people together', () => {
-    expect(filterMemes(memes, '  ACTUALLY ', 'pete', 'newest').map((m) => m.slug)).toContain(
+  it('searches meme text and names without a separate roster', () => {
+    expect(filterMemes(memes, '  ACTUALLY ', 'newest').map((m) => m.slug)).toContain(
       'one-quick-correction',
     )
-    expect(filterMemes(memes, '', 'andres', 'newest')).toHaveLength(3)
-    expect(filterMemes(memes, 'Peter', '', 'newest')).toHaveLength(5)
-    expect(filterMemes(memes, 'dot', '', 'newest')).toHaveLength(7)
-    expect(filterMemes(memes, '', 'brolley', 'newest')).toHaveLength(7)
-    expect(filterMemes(memes, 'outstanding', 'pete', 'newest')).toEqual([])
-    expect(filterMemes(memes, 'no such bit xyz', '', 'newest')).toEqual([])
+    expect(filterMemes(memes, 'Andres', 'newest')).toHaveLength(8)
+    expect(filterMemes(memes, 'Pete', 'newest')).toHaveLength(10)
+    expect(filterMemes(memes, 'Chris', 'newest')).toHaveLength(7)
+    expect(filterMemes(memes, 'Joshua', 'newest')).toHaveLength(1)
+    expect(filterMemes(memes, 'dot', 'newest')).toHaveLength(0)
+    expect(filterMemes(memes, 'no such bit xyz', 'newest')).toEqual([])
+  })
+  it('has no people directory or standalone roster export', async () => {
+    expect(existsSync(join(process.cwd(), 'src/app/people'))).toBe(false)
+    const data = await import('@/data/archive')
+    expect(Object.keys(data).sort()).toEqual(['lore', 'memes'])
+  })
+  it('preserves 31 distinct originals without unsupported metadata', () => {
+    expect(memes).toHaveLength(31)
+    const hashes = memes.map((meme) =>
+      createHash('sha256')
+        .update(readFileSync(join(process.cwd(), 'public', meme.originalImage)))
+        .digest('hex'),
+    )
+    expect(new Set(hashes).size).toBe(31)
+    expect(memes.filter((meme) => meme.dateBasis === 'delivery')).toHaveLength(7)
+    expect(memes.filter((meme) => meme.dateBasis === 'creation')).toHaveLength(22)
+    expect(memes.filter((meme) => meme.dateBasis === 'uploaded')).toHaveLength(1)
+    expect(memes.filter((meme) => meme.dateBasis === 'observed')).toHaveLength(1)
+    for (const meme of memes) {
+      expect(meme.date).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      expect(meme.datePrecision).toBe('day')
+      expect(meme.firstGroupUse).toBeNull()
+      expect(meme).not.toHaveProperty('creator')
+      expect(meme).not.toHaveProperty('sharer')
+      expect(meme).not.toHaveProperty('source')
+    }
+    for (const meme of memes.slice(7)) {
+      expect(meme.story).toBeUndefined()
+      expect(meme.lore).toBeUndefined()
+      expect(meme.formatUrl).toBeUndefined()
+    }
+    expect(findMeme('lebron-smiling-as-admin')?.dateLabel).toBe('Observed · Nov 5, 2026')
+    expect(findMeme('pete-pidermann-institute-facade')?.dateLabel).toBe('Seen · May 6, 2026')
+  })
+  it('uses the same stable alphabetical tie-breaker in either date order', () => {
+    const sameDay = [memes[0]!, memes[1]!]
+    expect(filterMemes(sameDay, '', 'oldest').map((m) => m.slug)).toEqual([
+      'hit-the-road',
+      'peace-in-chat',
+    ])
+    expect(filterMemes(sameDay, '', 'newest').map((m) => m.slug)).toEqual([
+      'hit-the-road',
+      'peace-in-chat',
+    ])
+    expect(sameDay[0]?.slug).toBe('peace-in-chat')
   })
   it('finds known and missing slugs', () => {
     expect(findMeme('peace-in-chat')?.title).toBe('Peace to C.H.A.T.')
@@ -38,17 +87,18 @@ describe('archive logic', () => {
   it('composes conditional classes and resolves Tailwind conflicts', () => {
     expect(cn('p-2', false && 'hidden', 'p-4')).toBe('p-4')
   })
-  it('has unique slugs, real assets, explicit credits and valid relations', () => {
+  it('has unique slugs, real assets, per-meme names and valid lore relations', () => {
     expect(new Set(memes.map((m) => m.slug)).size).toBe(memes.length)
     for (const meme of memes) {
       expect(existsSync(join(process.cwd(), 'public', meme.image))).toBe(true)
       expect(existsSync(join(process.cwd(), 'public', meme.originalImage))).toBe(true)
       expect(Number.isNaN(Date.parse(meme.date))).toBe(false)
-      expect(meme.creator).not.toBe(meme.depicted[0])
       expect(meme.alt.length).toBeGreaterThan(50)
-      for (const person of [...meme.depicted, ...meme.referenced, meme.creator, meme.requester])
-        expect(people.some((p) => p.slug === person)).toBe(true)
-      for (const story of meme.lore) expect(lore.some((l) => l.slug === story)).toBe(true)
+      for (const name of [...meme.depicted, ...meme.referenced]) {
+        expect(name.trim()).not.toBe('')
+        expect(name).toMatch(/^[A-Z]/)
+      }
+      for (const story of meme.lore ?? []) expect(lore.some((l) => l.slug === story)).toBe(true)
     }
   })
 })
