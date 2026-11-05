@@ -69,7 +69,7 @@ jobs:
       - name: Build and test static export
         if: matrix.mode == 'static'
         run: npm run test:e2e:static
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: playwright-${{ matrix.mode }}
@@ -150,7 +150,7 @@ jobs:
           E2E_BASE_URL: ${{ needs.pages-deploy.outputs.page_url }}
           NEXT_PUBLIC_BASE_PATH: ${{ needs.pages-build.outputs.base_path }}
           SITE_ORIGIN: ${{ needs.pages-build.outputs.site_origin }}
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: playwright-live-pages
