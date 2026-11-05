@@ -2,7 +2,13 @@
 
 ## Direction
 
-A phone-first, orange-and-green hog club noticeboard, rather than a formal museum. The compact mobile masthead puts the collection near the top. Desktop adds a featured meme and the stacked chant. Boar, hedgehog and pig emoji supply the character without introducing third-party image requests. Their exact drawing varies by operating system.
+A phone-first, orange-and-green hog club noticeboard with the confidence of a varsity pennant and the texture of an archive. The compact mobile masthead puts the collection near the top. Desktop adds a featured meme and the stacked chant. Warm paper, dark green ink, clipped letterforms and orange markers carry the identity across both themes.
+
+### A drawn identity, not a font setting
+
+`BrandMark` is a shared, inline SVG lockup in the header and footer. Its original angular C.H.A.T. letterforms, four diamond stops and tusked hog shield are drawn as paths, not rendered with an installed font. The geometry stays identical across devices and at every font-loading state. The mark is not a University of Miami logo or a font converted to outlines.
+
+The lockup scales from a 191px phone mark to a 238px desktop mark. Its accessible name comes from the containing home link; the decorative SVGs stay out of the accessibility tree. Forced-colors mode retains legible lettering. Supporting boar, hedgehog and pig emoji remain playful content accents, not the logo.
 
 ## Color
 
@@ -20,7 +26,15 @@ https://fontpair.co/pairings/diode-kode-mono
 
 Diode's download and embed controls open a Pro purchase gate. Its exact provider and webfont license were not verified; unrelated commercial fonts share that name. No preview font was copied and no purchase was made.
 
-This implementation uses **Anton** as an explicitly chosen, freely licensed display alternative, **Kode Mono** for interface labels, and the system sans-serif for longer prose. Anton is emphatic and legible in the compact mobile chant. It is not represented as Diode. Both bundled fonts are licensed under SIL OFL 1.1. Original font files and their complete copyright/license notices are in `src/assets/fonts`. The notices are also copied to `public/licenses` so static exports distribute them alongside the fonts.
+The primary pairing is **Anton + native system sans**: emphatic, condensed display type against quiet, readable body and interface text. **Kode Mono** is a supporting archive notation voice, reserved for short metadata, catalog labels and edition stamps.
+
+- **Display / Anton:** the HOG chant, page titles and section headings. Use its genuine regular weight, tight line height and modest negative tracking. It is an explicitly chosen, freely licensed alternative, not represented as Diode.
+- **Body and controls / system stack:** `ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`. Body copy, card titles, search, selects, buttons and navigation use the device's native UI family. Do not replace this with Arial as the first choice or load a body webfont.
+- **Archive notation / Kode Mono:** compact uppercase labels and short data only. The shared label size is 11px; body is 16px with a 1.65 line height, and supporting copy is 14px. The drawn logo's subordinate descriptor is intentionally smaller. No paragraphs or navigation use the mono face.
+
+The CSS tokens `--font-body`, `--font-display`, `--font-label`, `--text-body`, `--text-small`, `--text-label`, `--leading-body` and `--tracking-label` define these roles centrally. The SVG logo is separate from the typography system, so neither a system-font change nor a missing font turns it back into plain text.
+
+Both bundled fonts are licensed under SIL OFL 1.1. Original font files and their complete copyright/license notices are in `src/assets/fonts`. The notices are also copied to `public/licenses` so static exports distribute them alongside the fonts.
 
 - Anton source: https://github.com/google/fonts/tree/main/ofl/anton
 - Anton upstream: https://github.com/googlefonts/AntonFont
