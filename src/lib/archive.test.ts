@@ -31,17 +31,17 @@ describe('archive logic', () => {
     const data = await import('@/data/archive')
     expect(Object.keys(data).sort()).toEqual(['lore', 'memes'])
   })
-  it('preserves 29 distinct originals without unsupported metadata', () => {
-    expect(memes).toHaveLength(29)
+  it('preserves 30 distinct originals without unsupported metadata', () => {
+    expect(memes).toHaveLength(30)
     const hashes = memes.map((meme) =>
       createHash('sha256')
         .update(readFileSync(join(process.cwd(), 'public', meme.originalImage)))
         .digest('hex'),
     )
-    expect(new Set(hashes).size).toBe(29)
+    expect(new Set(hashes).size).toBe(30)
     expect(memes.filter((meme) => meme.dateBasis === 'delivery')).toHaveLength(7)
     expect(memes.filter((meme) => meme.dateBasis === 'creation')).toHaveLength(20)
-    expect(memes.filter((meme) => meme.dateBasis === 'uploaded')).toHaveLength(1)
+    expect(memes.filter((meme) => meme.dateBasis === 'uploaded')).toHaveLength(2)
     expect(memes.filter((meme) => meme.dateBasis === 'observed')).toHaveLength(1)
     for (const meme of memes) {
       expect(meme.date).toMatch(/^\d{4}-\d{2}-\d{2}$/)
@@ -58,6 +58,33 @@ describe('archive logic', () => {
     }
     expect(findMeme('lebron-smiling-as-admin')?.dateLabel).toBe('Observed · Nov 5, 2026')
     expect(findMeme('pete-pidermann-institute-facade')?.dateLabel).toBe('Seen · May 6, 2026')
+  })
+  it('preserves the recovered bow-pose original with only its known upload date', () => {
+    const meme = findMeme('brolley-bow-pose')!
+    expect(meme).toMatchObject({
+      title: 'Bow Pose',
+      image: '/memes/brolley-bow-pose.jpg',
+      originalImage: '/memes/brolley-bow-pose.jpg',
+      width: 1209,
+      height: 1300,
+      date: '2026-10-11',
+      dateLabel: 'Seen · Oct 11, 2026',
+      dateBasis: 'uploaded',
+      firstGroupUse: null,
+      depicted: ['Brolley'],
+      referenced: [],
+    })
+    expect(
+      createHash('sha256')
+        .update(readFileSync(join(process.cwd(), 'public', meme.originalImage)))
+        .digest('hex'),
+    ).toBe('2a2821236bbbbd76ed05fdd002d00e1c250989dd439b39d81b20e022ff60b2b5')
+    expect(filterMemes(memes, 'Brolley', 'newest').map((record) => record.slug)).toContain(
+      meme.slug,
+    )
+    expect(filterMemes(memes, 'bow pose', 'newest')).toEqual([meme])
+    expect(meme.story).toBeUndefined()
+    expect(meme.lore).toBeUndefined()
   })
   it('excludes unrelated Raul records and every original/display asset', () => {
     expect(filterMemes(memes, 'Raul', 'newest')).toEqual([])

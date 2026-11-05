@@ -79,7 +79,9 @@ export default async function MemePage({ params }: { params: Promise<{ slug: str
               <dt>Archive date</dt>
               <dd>
                 {meme.dateLabel}
-                {meme.dateBasis === 'observed' && <span>Creation date is unknown.</span>}
+                {(meme.dateBasis === 'observed' || meme.dateBasis === 'uploaded') && (
+                  <span>Creation date is unknown.</span>
+                )}
                 <span>First use in the group is unknown.</span>
               </dd>
             </div>
