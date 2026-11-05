@@ -53,7 +53,7 @@ export default async function MemePage({ params }: { params: Promise<{ slug: str
           />
           <Button variant="outline" asChild className="original-button">
             <a href={assetPath(meme.originalImage)} target="_blank" rel="noreferrer">
-              Open full-resolution image ↗
+              {meme.originalImageLabel ?? 'Open full-resolution image'} ↗
             </a>
           </Button>
         </div>
