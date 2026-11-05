@@ -31,16 +31,16 @@ describe('archive logic', () => {
     const data = await import('@/data/archive')
     expect(Object.keys(data).sort()).toEqual(['lore', 'memes'])
   })
-  it('preserves 31 distinct originals without unsupported metadata', () => {
-    expect(memes).toHaveLength(31)
+  it('preserves 29 distinct originals without unsupported metadata', () => {
+    expect(memes).toHaveLength(29)
     const hashes = memes.map((meme) =>
       createHash('sha256')
         .update(readFileSync(join(process.cwd(), 'public', meme.originalImage)))
         .digest('hex'),
     )
-    expect(new Set(hashes).size).toBe(31)
+    expect(new Set(hashes).size).toBe(29)
     expect(memes.filter((meme) => meme.dateBasis === 'delivery')).toHaveLength(7)
-    expect(memes.filter((meme) => meme.dateBasis === 'creation')).toHaveLength(22)
+    expect(memes.filter((meme) => meme.dateBasis === 'creation')).toHaveLength(20)
     expect(memes.filter((meme) => meme.dateBasis === 'uploaded')).toHaveLength(1)
     expect(memes.filter((meme) => meme.dateBasis === 'observed')).toHaveLength(1)
     for (const meme of memes) {
@@ -58,6 +58,17 @@ describe('archive logic', () => {
     }
     expect(findMeme('lebron-smiling-as-admin')?.dateLabel).toBe('Observed · Nov 5, 2026')
     expect(findMeme('pete-pidermann-institute-facade')?.dateLabel).toBe('Seen · May 6, 2026')
+  })
+  it('excludes unrelated Raul records and every original/display asset', () => {
+    expect(filterMemes(memes, 'Raul', 'newest')).toEqual([])
+    for (const slug of ['raul-still-at-afters', 'raul-the-corner-2013']) {
+      expect(findMeme(slug)).toBeUndefined()
+      for (const extension of ['png', 'webp']) {
+        expect(existsSync(join(process.cwd(), 'public', 'memes', `${slug}.${extension}`))).toBe(
+          false,
+        )
+      }
+    }
   })
   it('uses the same stable alphabetical tie-breaker in either date order', () => {
     const sameDay = [memes[0]!, memes[1]!]
