@@ -4,6 +4,7 @@ import Link from 'next/link'
 import localFont from 'next/font/local'
 import { SiteHeader } from '@/components/site-header'
 import { BottomNav } from '@/components/bottom-nav'
+import { BrandMark } from '@/components/brand-mark'
 import './globals.css'
 
 const displayFont = localFont({
@@ -61,8 +62,8 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <SiteHeader />
         {children}
         <footer className="site-footer shell">
-          <Link href="/" className="footer-mark">
-            <span aria-hidden="true">🐗</span> C.H.A.T. ARCHIVE
+          <Link href="/" className="footer-mark" aria-label="C.H.A.T. Archive home">
+            <BrandMark />
           </Link>
           <p>Hogs of a feather. Extremely important nonsense, preserved.</p>
           <Link href="/about/">Credits & archive notes ↗</Link>
